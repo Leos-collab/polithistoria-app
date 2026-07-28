@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Question } from '../types';
 import { SplitBackground } from './SplitBackground';
-import { Save, ArrowLeft, Image as ImageIcon, Sparkles, Plus, Trash2, Loader2, Wand2 } from 'lucide-react';
+import { Save, ArrowLeft, Image as ImageIcon, Sparkles, Plus, Trash2, Loader2, Wand2, ChevronUp, ChevronDown } from 'lucide-react';
 import { generateQuestionFromTopic } from '../lib/ai';
 
 interface AdmQuestionFormProps {
@@ -88,6 +88,26 @@ export const AdmQuestionForm: React.FC<AdmQuestionFormProps> = ({
     } else if (correctOptionIndex > idxToRemove) {
       setCorrectOptionIndex(correctOptionIndex - 1);
     }
+  };
+
+  const handleMoveOptionUp = (idxToMove: number) => {
+    if (idxToMove === 0) return;
+    const newOptions = [...options];
+    [newOptions[idxToMove - 1], newOptions[idxToMove]] = [newOptions[idxToMove], newOptions[idxToMove - 1]];
+    setOptions(newOptions);
+
+    if (correctOptionIndex === idxToMove) setCorrectOptionIndex(idxToMove - 1);
+    else if (correctOptionIndex === idxToMove - 1) setCorrectOptionIndex(idxToMove);
+  };
+
+  const handleMoveOptionDown = (idxToMove: number) => {
+    if (idxToMove === options.length - 1) return;
+    const newOptions = [...options];
+    [newOptions[idxToMove + 1], newOptions[idxToMove]] = [newOptions[idxToMove], newOptions[idxToMove + 1]];
+    setOptions(newOptions);
+
+    if (correctOptionIndex === idxToMove) setCorrectOptionIndex(idxToMove + 1);
+    else if (correctOptionIndex === idxToMove + 1) setCorrectOptionIndex(idxToMove);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -275,12 +295,32 @@ export const AdmQuestionForm: React.FC<AdmQuestionFormProps> = ({
                 >
                   {correctOptionIndex === idx ? 'Correta' : 'Marcar'}
                 </button>
+                <div className="flex flex-col gap-1 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleMoveOptionUp(idx)}
+                    disabled={idx === 0}
+                    title="Mover para cima"
+                    className="p-0.5 bg-slate-900 hover:bg-slate-800 disabled:opacity-20 disabled:cursor-not-allowed text-slate-300 border border-slate-700 rounded transition-all cursor-pointer"
+                  >
+                    <ChevronUp className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleMoveOptionDown(idx)}
+                    disabled={idx === options.length - 1}
+                    title="Mover para baixo"
+                    className="p-0.5 bg-slate-900 hover:bg-slate-800 disabled:opacity-20 disabled:cursor-not-allowed text-slate-300 border border-slate-700 rounded transition-all cursor-pointer"
+                  >
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                </div>
                 {options.length > 2 && (
                   <button
                     type="button"
                     onClick={() => handleRemoveOption(idx)}
                     title="Excluir esta resposta"
-                    className="p-2.5 bg-rose-950/80 hover:bg-rose-900/90 text-rose-300 hover:text-rose-100 border border-rose-800/80 rounded-xl text-xs transition-all cursor-pointer"
+                    className="p-2.5 bg-rose-950/80 hover:bg-rose-900/90 text-rose-300 hover:text-rose-100 border border-rose-800/80 rounded-xl text-xs transition-all cursor-pointer shrink-0"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
