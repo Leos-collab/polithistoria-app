@@ -110,10 +110,25 @@ Regras:
     imageUrl = await fetchUnsplashImage(parsed.searchKeyword);
   }
 
+  // Embaralhar as opções
+  const optionsWithIndex = parsed.options.map((opt: string, idx: number) => ({ 
+    text: opt, 
+    isCorrect: idx === parsed.correctOptionIndex 
+  }));
+  
+  // Algoritmo Fisher-Yates shuffle
+  for (let i = optionsWithIndex.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [optionsWithIndex[i], optionsWithIndex[j]] = [optionsWithIndex[j], optionsWithIndex[i]];
+  }
+  
+  const shuffledOptions = optionsWithIndex.map((o: any) => o.text);
+  const finalCorrectIndex = optionsWithIndex.findIndex((o: any) => o.isCorrect);
+
   return {
     text: parsed.text,
-    options: parsed.options,
-    correctOptionIndex: parsed.correctOptionIndex,
+    options: shuffledOptions,
+    correctOptionIndex: finalCorrectIndex,
     imageUrl: imageUrl || undefined
   };
 }
