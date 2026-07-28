@@ -1,0 +1,6 @@
+{
+  "name": "Questionário Interativo ADM",
+  "description": "Sistema de perguntas e respostas com cadastro de nascimento, painel ADM e persistência de dados.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
