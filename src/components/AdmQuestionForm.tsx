@@ -50,6 +50,7 @@ export const AdmQuestionForm: React.FC<AdmQuestionFormProps> = ({
       if (typeof generated.correctOptionIndex === 'number') {
         setCorrectOptionIndex(generated.correctOptionIndex);
       }
+      if (generated.imageUrl) setImageUrl(generated.imageUrl);
     } catch (err: any) {
       setAiError(err.message || 'Erro ao gerar pergunta com IA. Tente novamente.');
     } finally {
