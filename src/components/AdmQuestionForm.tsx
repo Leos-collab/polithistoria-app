@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Question } from '../types';
 import { SplitBackground } from './SplitBackground';
-import { Save, ArrowLeft, Image as ImageIcon, Sparkles, Plus, Trash2 } from 'lucide-react';
+import { Save, ArrowLeft, Image as ImageIcon, Sparkles, Plus, Trash2, Loader2, Wand2 } from 'lucide-react';
+import { generateQuestionFromTopic } from '../lib/ai';
 
 interface AdmQuestionFormProps {
   initialQuestion?: Question | null;
@@ -31,6 +32,30 @@ export const AdmQuestionForm: React.FC<AdmQuestionFormProps> = ({
     initialQuestion?.correctOptionIndex ?? 0
   );
   const [error, setError] = useState('');
+  const [topic, setTopic] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiError, setAiError] = useState('');
+
+  const handleGenerateWithAI = async () => {
+    if (!topic.trim()) {
+      setAiError('Por favor, digite um assunto para gerar a pergunta.');
+      return;
+    }
+    setAiError('');
+    setIsGenerating(true);
+    try {
+      const generated = await generateQuestionFromTopic(topic.trim());
+      if (generated.text) setText(generated.text);
+      if (generated.options) setOptions(generated.options);
+      if (typeof generated.correctOptionIndex === 'number') {
+        setCorrectOptionIndex(generated.correctOptionIndex);
+      }
+    } catch (err: any) {
+      setAiError(err.message || 'Erro ao gerar pergunta com IA. Tente novamente.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleOptionChange = (idx: number, value: string) => {
     const updated = [...options];
@@ -111,6 +136,50 @@ export const AdmQuestionForm: React.FC<AdmQuestionFormProps> = ({
           <h2 className="text-xl font-bold text-slate-100 border-b border-slate-800 pb-3 text-center">
             {initialQuestion ? 'Alterar Pergunta' : 'Criar Nova Pergunta'}
           </h2>
+
+          {/* AI Question Generator */}
+          <div className="bg-gradient-to-br from-violet-950/60 to-indigo-950/60 border border-violet-700/40 rounded-2xl p-4 space-y-3">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="p-1.5 rounded-lg bg-violet-500/20 border border-violet-400/30">
+                <Wand2 className="w-4 h-4 text-violet-300" />
+              </div>
+              <span className="text-sm font-bold text-violet-200 tracking-wide">Gerar com Inteligência Artificial</span>
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleGenerateWithAI())}
+                placeholder="Ex: Revolução Francesa, Idade Média, Segunda Guerra..."
+                disabled={isGenerating}
+                className="flex-1 bg-slate-950/80 border border-violet-700/50 rounded-xl p-3 text-slate-100 text-sm outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 disabled:opacity-50 placeholder:text-slate-500"
+              />
+              <button
+                type="button"
+                id="btn-generate-ai"
+                onClick={handleGenerateWithAI}
+                disabled={isGenerating}
+                className="shrink-0 bg-violet-600 hover:bg-violet-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold px-4 py-3 rounded-xl border border-violet-400/30 shadow-lg shadow-violet-600/30 cursor-pointer flex items-center gap-2 transition-all active:scale-[0.97]"
+              >
+                {isGenerating ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> Gerando...</>
+                ) : (
+                  <><Sparkles className="w-4 h-4" /> Gerar com IA</>
+                )}
+              </button>
+            </div>
+            {aiError && (
+              <p className="text-rose-300 bg-rose-950/50 border border-rose-800/60 rounded-xl p-2.5 text-xs font-medium">
+                ⚠️ {aiError}
+              </p>
+            )}
+            {!aiError && (
+              <p className="text-violet-400/70 text-xs">
+                ✨ A IA irá preencher automaticamente a pergunta, as opções e a resposta correta.
+              </p>
+            )}
+          </div>
 
           {error && (
             <p className="text-rose-300 bg-rose-950/70 border border-rose-800 rounded-xl p-2.5 text-center text-xs font-medium">

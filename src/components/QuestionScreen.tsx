@@ -45,10 +45,16 @@ export const QuestionScreen: React.FC<QuestionScreenProps> = ({
   const handleNext = () => {
     if (!selectedOption) return;
 
+    const correctOptionIndex = currentQuestion.correctOptionIndex ?? -1;
+    const correctOption = correctOptionIndex >= 0 ? currentQuestion.options[correctOptionIndex] : '';
+    const isCorrect = selectedOption === correctOption;
+
     const newAnswer: UserAnswer = {
       questionId: currentQuestion.id,
       questionText: currentQuestion.text,
       selectedOption: selectedOption,
+      correctOption,
+      isCorrect,
       answeredAt: new Date().toISOString()
     };
 

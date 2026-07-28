@@ -2,6 +2,8 @@ export interface UserAnswer {
   questionId: string;
   questionText: string;
   selectedOption: string;
+  correctOption: string;
+  isCorrect: boolean;
   answeredAt: string;
 }
 
