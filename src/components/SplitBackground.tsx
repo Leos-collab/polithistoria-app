@@ -12,25 +12,27 @@ export const SplitBackground: React.FC<SplitBackgroundProps> = ({ children }) =>
       <div className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[140px] pointer-events-none z-0" />
 
       {/* Background Split */}
-      <div className="absolute inset-0 grid grid-cols-1 md:grid-cols-2 z-0 pointer-events-none opacity-80">
+      <div className="absolute inset-0 flex flex-col md:flex-row z-0 pointer-events-none opacity-80">
         {/* Left Side: Pyramids Sunset (History) */}
-        <div className="relative h-1/2 md:h-full w-full overflow-hidden">
+        <div className="relative w-full h-1/2 md:h-full md:w-1/2 overflow-hidden bg-slate-950">
           <img
             src="https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1200&q=80"
             alt="História - Pirâmides"
             className="w-full h-full object-cover object-center filter brightness-85 contrast-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-slate-950/20" />
+          {/* Gradient to blend with the other half */}
+          <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-transparent via-slate-950/40 to-slate-950" />
         </div>
 
         {/* Right Side: Parliament / Political Dome (Politics) */}
-        <div className="relative h-1/2 md:h-full w-full overflow-hidden">
+        <div className="relative w-full h-1/2 md:h-full md:w-1/2 overflow-hidden bg-slate-950">
           <img
             src="https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1200&q=80"
             alt="Política - Parlamento"
             className="w-full h-full object-cover object-center filter brightness-85 contrast-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-slate-950/20" />
+          {/* Gradient to blend with the other half */}
+          <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-transparent via-slate-950/40 to-slate-950" />
         </div>
       </div>
 
